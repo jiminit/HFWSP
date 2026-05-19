@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>LTRISK</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    <header class="top-style">
+        <h1>Australian lifetime risk of cardiovascular disease calculator</h1>
+    </header>
+    <div class="content-wrapper">
+        <div class="container">
+            <h2>Select interventions</h2>
+            <form action="/intervention" method="post">
+
+                <div class="input-group">
+                    <label>Lower LDL-cholesterol?</label>
+                    <br>
+                    <input type="radio" name="ldl_lower" value="lpercentage" id="lpercentage"> By percentage
+                    <br>
+                    <input type="radio" name="ldl_lower" value="lvalue" id="lvalue"> By value
+                    <br>
+                    <input type="radio" name="ldl_lower" value="ltarget" id="ltarget"> By target
+                    <br>
+                    <input type="radio" name="ldl_lower" value="lna" id="lna" checked> Neither
+                    <br>
+                </div>
+                <div id="ldllp-input" class="input-group" style="display: none;">
+                    <label for="ldl_lp">LDL-cholesterol reduction percentage</label>
+                    <input type="number" step="any" id="ldl_lp" name="ldl_lp" placeholder="LDL-C reduction (%)"
+                        onblur="validateinputs()">
+                    <p class="subtitle">(For example, rosuvastatin 10 mg lowers LDL-C about 45%)</p>
+                    <span id="ldl_lp-error" style="color: red; font-size: 0.8rem; display: none;">
+                        LDL-C lowering must be between 1 and 99%.</span>
+                </div>
+                <div id="ldlla-input" class="input-group" style="display: none;">
+                    <label for="ldl_la">LDL-cholesterol reduction value</label>
+                    <input type="number" step="any" id="ldl_la" name="ldl_la" placeholder="LDL-C reduction (mmol/L)"
+                        onblur="validateinputs()">
+                    <p class="subtitle">(For example, switching to psyllium cereal lowers LDL-C by about 0.35 mmol/L)
+                    </p>
+                    <span id="ldl_la-error" style="color: red; font-size: 0.8rem; display: none;">
+                        LDL-C lowering must be above 0 and less than your LDL-C.</span>
+                </div>
+                <div id="ldlt-input" class="input-group" style="display: none;">
+                    <label for="ldl_t">LDL-cholesterol target</label>
+                    <input type="number" step="any" id="ldl_t" name="ldl_t" placeholder="LDL-C target (mmol/L)"
+                        onblur="validateinputs()">
+                    <p class="subtitle">(Clinical guidelines recommend a target of 1.8 mmol/L)</p>
+                    <span id="ldl_t-error" style="color: red; font-size: 0.8rem; display: none;">
+                        LDL-C target must be between 0.1 and 4 mmol/L.</span>
+                </div>
+
+                <div class="input-group">
+                    <label>Lower Systolic blood pressure?</label>
+                    <br>
+                    <input type="radio" name="sbp_lower" value="spercentage" id="spercentage"> By value
+                    <br>
+                    <input type="radio" name="sbp_lower" value="starget" id="starget"> By target
+                    <br>
+                    <input type="radio" name="sbp_lower" value="na" id="na" checked> Neither
+                    <br>
+                </div>
+                <div id="sbpp-input" class="input-group" style="display: none;">
+                    <label for="sbp_l">Systolic blood pressure reduction</label>
+                    <input type="number" step="any" id="sbp_l" name="sbp_l"
+                        placeholder="Systolic blood pressure reduction (mmHg)" onblur="validateinputs()">
+                    <p class="subtitle">(Starting one antihypertensive will reduce blood pressure about 5-10 mmHg)</p>
+                    <span id="sbp_l-error" style="color: red; font-size: 0.8rem; display: none;">
+                        Sytolic blood pressure lowering must be between 1 and 60 mmHg.</span>
+                </div>
+                <div id="sbpt-input" class="input-group" style="display: none;">
+                    <label for="sbp_t">Systolic blood pressure target</label>
+                    <input type="number" step="any" id="sbp_t" name="sbp_t"
+                        placeholder="Systolic blood pressure target (mmHg)" onblur="validateinputs()">
+                    <p class="subtitle">(Clinical guidelines recommend a target of 120 mmHg)</p>
+                    <span id="sbp_t-error" style="color: red; font-size: 0.8rem; display: none;">
+                        SBP target must be between 120 and 150 mmHg.</span>
+                </div>
+
+                {% if data.get('sma') and not data.get('smo') %}
+                <div id="smoking-inputs-section-2" class="input-group">
+                    <div class="input-group">
+                        <label>Quit smoking?</label>
+                        <br>
+                        <input type="radio" name="qs" value=1 id="yes" checked>Yes
+                        <input type="radio" name="qs" value=0 id="no">No
+                    </div>
+                </div>
+                {% endif %}
+                <input type="hidden" id="session-ldl" value="{{ session.get('cleaned_data', {}).get('ldl', 1.5) }}">
+                <br><br>
+                <button type="submit">Submit</button>
+                <br><br>
+                <div><a href="{{ url_for('restart') }}">Restart</a></div>
+            </form>
+        </div>
+
+    </div>
+    <footer class="bottom-style">
+        <div class="footer-content">
+            <img src="{{ url_for('static', filename='images/Monash.svg') }}" alt="Institution Logo" class="footer-logo">
+            <img src="{{ url_for('static', filename='images/HF.png') }}" alt="Institution Logo"
+                class="footer-logo-large">
+            <img src="{{ url_for('static', filename='images/Baker.svg') }}" alt="Institution Logo" class="footer-logo">
+            <p>Questions or suggestions? <br> Contact: Jedidiah Morton (jedidiah.morton@monash.edu.au)</p>
+        </div>
+    </footer>
+    <script>
+
+        const radiosl = document.querySelectorAll('input[name="ldl_lower"]');
+        const ldllpbox = document.getElementById('ldllp-input');
+        const ldllabox = document.getElementById('ldlla-input');
+        const ldltbox = document.getElementById('ldlt-input');
+        radiosl.forEach(radio => {
+            radio.addEventListener('change', function () {
+                if (this.value === 'lpercentage') {
+                    ldllpbox.style.display = 'block';
+                    ldllabox.style.display = 'none';
+                    ldltbox.style.display = 'none';
+                    ldl_la.value = "";
+                    ldl_t.value = "";
+                }
+                else if (this.value === 'lvalue') {
+                    ldllpbox.style.display = 'none';
+                    ldllabox.style.display = 'block';
+                    ldltbox.style.display = 'none';
+                    ldl_lp.value = "";
+                    ldl_t.value = "";
+                }
+                else if (this.value === 'ltarget') {
+                    ldllpbox.style.display = 'none';
+                    ldllabox.style.display = 'none';
+                    ldltbox.style.display = 'block';
+                    ldl_lp.value = "";
+                    ldl_la.value = "";
+                }
+                else {
+                    ldllpbox.style.display = 'none';
+                    ldllabox.style.display = 'none';
+                    ldltbox.style.display = 'none';
+                    ldl_lp.value = "";
+                    ldl_la.value = "";
+                    ldl_t.value = "";
+                }
+            });
+        });
+
+        const radioss = document.querySelectorAll('input[name="sbp_lower"]');
+        const sbppbox = document.getElementById('sbpp-input');
+        const sbptbox = document.getElementById('sbpt-input');
+        radioss.forEach(radio => {
+            radio.addEventListener('change', function () {
+                if (this.value === 'spercentage') {
+                    sbppbox.style.display = 'block';
+                    sbptbox.style.display = 'none';
+                    sbp_t.value = "";
+                }
+                else if (this.value === 'starget') {
+                    sbppbox.style.display = 'none';
+                    sbptbox.style.display = 'block';
+                    sbp_l.value = "";
+                }
+                else {
+                    sbppbox.style.display = 'none';
+                    sbptbox.style.display = 'none';
+                    sbp_l.value = "";
+                    sbp_t.value = "";
+                }
+            });
+        });
+
+
+        function validateinputs() {
+            const sessionldl = parseFloat(document.getElementById('session-ldl').value);
+            const submitBtn = document.querySelector('button[type="submit"]');
+
+            const ldl_lp = parseFloat(document.getElementById('ldl_lp').value);
+            const ldl_la = parseFloat(document.getElementById('ldl_la').value);
+            const ldl_t = parseFloat(document.getElementById('ldl_t').value);
+            const sbp_l = parseFloat(document.getElementById('sbp_l').value);
+            const sbp_t = parseFloat(document.getElementById('sbp_t').value);
+
+            const ldl_llp = document.querySelector('input[name="ldl_lower"][value="lpercentage"]').checked;
+            const ldl_lla = document.querySelector('input[name="ldl_lower"][value="lvalue"]').checked;
+            const ldl_lt = document.querySelector('input[name="ldl_lower"][value="ltarget"]').checked;
+            const sbp_lp = document.querySelector('input[name="sbp_lower"][value="spercentage"]').checked;
+            const sbp_lt = document.querySelector('input[name="sbp_lower"][value="starget"]').checked;
+
+            const ldllperror = document.getElementById('ldl_lp-error');
+            const ldllaerror = document.getElementById('ldl_la-error');
+            const ldlterror = document.getElementById('ldl_t-error');
+            const sbpperror = document.getElementById('sbp_l-error');
+            const sbpterror = document.getElementById('sbp_t-error');
+
+            let isinvalid = false;
+
+            if (isNaN(sessionldl)) {
+                ldl = 1.5;
+            } else {
+                ldl = sessionldl
+            }
+
+            if (ldl_lp < 1 || ldl_lp > 99) {
+                ldllperror.style.display = 'block';
+                isinvalid = true;
+            } else if (ldl_llp && isNaN(ldl_lp)) {
+                ldllperror.style.display = 'block';
+                isinvalid = true;
+            } else {
+                ldllperror.style.display = 'none';
+            }
+
+
+            if (ldl_la < 0 || ldl_la > ldl) {
+                ldllaerror.style.display = 'block';
+                isinvalid = true;
+            } else if (ldl_lla && isNaN(ldl_la)) {
+                ldllaerror.style.display = 'block';
+                isinvalid = true;
+            } else {
+                ldllaerror.style.display = 'none';
+            }
+
+            if (ldl_t < 0.1 || ldl_t > 4) {
+                ldlterror.style.display = 'block';
+                isinvalid = true;
+            } else if (ldl_lt && isNaN(ldl_t)) {
+                isinvalid = true;
+                ldlterror.style.display = 'block';
+            } else {
+                ldlterror.style.display = 'none';
+            }
+
+            if (sbp_l < 1 || sbp_l > 60) {
+                sbpperror.style.display = 'block';
+                isinvalid = true;
+            } else if (sbp_lp && isNaN(sbp_l)) {
+                isinvalid = true;
+                sbpperror.style.display = 'block';
+            } else {
+                sbpperror.style.display = 'none';
+            }
+
+            if (sbp_t < 120 || sbp_t > 150) {
+                sbpterror.style.display = 'block';
+                isinvalid = true;
+            } else if (sbp_lt && isNaN(sbp_t)) {
+                isinvalid = true;
+                sbpterror.style.display = 'block';
+            } else {
+                sbpterror.style.display = 'none';
+            }
+
+            if (isinvalid) {
+                submitBtn.disabled = true;
+                submitBtn.style.opacity = '0.5';
+            } else {
+                submitBtn.disabled = false;
+                submitBtn.style.opacity = '1';
+            }
+
+
+        }
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Results</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
+</head>
+
+<body>
+    <header class="top-style">
+        <h1>Australian lifetime risk of cardiovascular disease calculator</h1>
+    </header>
+    <div class="content-wrapper">
+        <div class="container2">
+            <h2>Results</h2>
+            <table class="stata-table">
+                <thead>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Life expectancy</td>
+                        <td>{{ result[0] }}</td>
+                    </tr>
+                    <tr>
+                        <td>Lifetime risk of CVD</td>
+                        <td>{{ result[1] }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <h2>Lifetime risk of CVD visualised</h2>
+            This graph shows your estimated cumulative risk of CVD by age.
+            <div id="chart" class="chart"></div>
+            <script type="text/javascript">
+                var graphs = JSON.parse('{{ graphJSON | safe }}');
+                Plotly.newPlot('chart', graphs.data, graphs.layout, { responsive: true });
+            </script>
+            These are estimates assuming no preventive action is taken.
+            <br>
+            <br>
+            To see what would happen if you took action to prevent CVD,
+            you can <a href="/interventions" onclick="document.getElementById('loading-overlay').style.display='flex';">
+                see what would happen with a range of interventions</a>.
+            <br>
+            <br>
+            Or, you can <a href="/select_intervention">test your own interventions</a>
+            <br>
+            <br>
+            If you think you input a value in error, you can <a href="{{ url_for('restart') }}">restart</a>.
+            <br>
+            <br>
+
+        </div>
+    </div>
+    <footer class="bottom-style">
+        <div class="footer-content">
+            <img src="{{ url_for('static', filename='images/Monash.svg') }}" alt="Institution Logo" class="footer-logo">
+            <img src="{{ url_for('static', filename='images/HF.png') }}" alt="Institution Logo"
+                class="footer-logo-large">
+            <img src="{{ url_for('static', filename='images/Baker.svg') }}" alt="Institution Logo" class="footer-logo">
+            <p>Questions or suggestions? <br> Contact: Jedidiah Morton (jedidiah.morton@monash.edu.au)</p>
+        </div>
+    </footer>
+</body>
+
+<div id="loading-overlay" class="loading-overlay">
+    <div class="loader"></div>
+    <p>Calculating...</p>
+</div>
+
+</html>
