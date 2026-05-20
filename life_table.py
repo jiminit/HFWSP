@@ -3,38 +3,38 @@ import numpy as np
 
 def lifetable(df, age_input):
 
-    tp_nfMI = df['tp_nfMI'].values
-    tp_nfIS = df['tp_nfIS'].values
-    tp_nfHS = df['tp_nfHS'].values
-    tp_nfdm = df['tp_nfdm'].values
-    tp_fCHD = df['tp_fCHD'].values
-    tp_fCBD = df['tp_fCBD'].values
-    tp_fLC = df['tp_fLC'].values
-    tp_fCC = df['tp_fCC'].values
-    tp_fCOPD = df['tp_fCOPD'].values
-    tp_fOTH = df['tp_fOTH'].values
+    tp_nfMI = df['tp_nfMI'].values.copy()
+    tp_nfIS = df['tp_nfIS'].values.copy()
+    tp_nfHS = df['tp_nfHS'].values.copy()
+    tp_nfdm = df['tp_nfdm'].values.copy()
+    tp_fCHD = df['tp_fCHD'].values.copy()
+    tp_fCBD = df['tp_fCBD'].values.copy()
+    tp_fLC = df['tp_fLC'].values.copy()
+    tp_fCC = df['tp_fCC'].values.copy()
+    tp_fCOPD = df['tp_fCOPD'].values.copy()
+    tp_fOTH = df['tp_fOTH'].values.copy()
 
-    tp_nfMI_dm = df['tp_nfMI_dm'].values
-    tp_nfIS_dm = df['tp_nfIS_dm'].values
-    tp_nfHS_dm = df['tp_nfHS_dm'].values
-    tp_fCHD_dm = df['tp_fCHD_dm'].values
-    tp_fCBD_dm = df['tp_fCBD_dm'].values
-    tp_fLC_dm = df['tp_fLC_dm'].values
-    tp_fCC_dm = df['tp_fCC_dm'].values
-    tp_fCOPD_dm = df['tp_fCOPD_dm'].values
-    tp_fOTH_dm = df['tp_fOTH_dm'].values
+    tp_nfMI_dm = df['tp_nfMI_dm'].values.copy()
+    tp_nfIS_dm = df['tp_nfIS_dm'].values.copy()
+    tp_nfHS_dm = df['tp_nfHS_dm'].values.copy()
+    tp_fCHD_dm = df['tp_fCHD_dm'].values.copy()
+    tp_fCBD_dm = df['tp_fCBD_dm'].values.copy()
+    tp_fLC_dm = df['tp_fLC_dm'].values.copy()
+    tp_fCC_dm = df['tp_fCC_dm'].values.copy()
+    tp_fCOPD_dm = df['tp_fCOPD_dm'].values.copy()
+    tp_fOTH_dm = df['tp_fOTH_dm'].values.copy()
 
-    tp_d_cvd = df['tp_d_cvd'].values
+    tp_d_cvd = df['tp_d_cvd'].values.copy()
 
-    he_s = df['HE_S'].values
-    dm_s = df['DM_S'].values
-    cv_s = df['CV_S'].values
-    dt_s = df['DT_S'].values
+    he_s = df['HE_S'].values.copy()
+    dm_s = df['DM_S'].values.copy()
+    cv_s = df['CV_S'].values.copy()
+    dt_s = df['DT_S'].values.copy()
     
-    he_e = df['HE_E'].values
-    dm_e = df['DM_E'].values
-    cv_e = df['CV_E'].values
-    dt_e = df['DT_E'].values
+    he_e = df['HE_E'].values.copy()
+    dm_e = df['DM_E'].values.copy()
+    cv_e = df['CV_E'].values.copy()
+    dt_e = df['DT_E'].values.copy()
     
     ages = age_input*10
     for i in range(ages, 1000):
