@@ -3,5 +3,4 @@ gunicorn
 plotly
 pandas
 numpy
-os
-time
+

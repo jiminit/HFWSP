@@ -8,8 +8,6 @@ import numpy as np
 import plotly.express as px
 import plotly.io as pio
 from flask import Flask, render_template, request, redirect, url_for, flash, session
-import os
-import time
 
 from rfs_and_tps import construct_life_table
 from life_table import lifetable
