@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>Results</title>
+    <title>Lifetime risk calculator</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
 </head>
@@ -14,7 +14,7 @@
     <div class="content-wrapper">
         <div class="container2">
             <div class="report-wrapper">
-                <h2>Results</h2>
+                <h2>Your lifetime risk with a range of interventions</h2>
                 <div class="report-item">
                     <table class="stata-table">
                         <thead>
@@ -36,6 +36,14 @@
                             {% endfor %}
                         </tbody>
                     </table>
+                    Cardiovascular disease in this tool is defined as a myocardial infarction, death from coronary heart
+                    disease, a stroke, or death from cerebrovascular disease.
+                    <br>
+                    <br>
+                    Abbreviations: LDL-C &ndash; low density lipoprotein-cholesterol; SBP &ndash; systolic blood
+                    pressure.
+
+
                     {% if data.get('sma') and not data.get('smo') %}
                     <div class="disclaimer-box">
                         <strong>Note:</strong> Lifetime risk of CVD can increase for smokers when quitting. This is
@@ -44,28 +52,27 @@
                         who quit live longer than smokers who don't, and so are less likely to die before getting CVD.
                     </div>
                     {% endif %}
-                    The interventions were as follows:
+                    <br>
+                    <br>
+                    The interventions are all examples only, there are many ways to modify your cardiovascular risk, and
+                    everyone's response to specific changes will vary. The
+                    ones tested here were as follows:
                     <ul>
                         <li>No intervention &ndash; assuming no preventive action is taken, so LDL-C stays the same and
-                            blood
-                            pressure increases with age.
-                        <li>Small LDL-C change &ndash; Start eating psyllium cereal, leading to a 0.35 mmol/L reduction
-                            in
-                            LDL-C
+                            blood pressure increases with age.
+                        <li>Small LDL-C change &ndash; start eating psyllium cereal, leading to a 0.35 mmol/L reduction
+                            in LDL-C (this is an example, there are many things you can do to change your LDL-C)
                         </li>
-                        <li>Large LDL-C change &ndash; Start taking 10 mg rosuvastatin once daily, leading to a 45.6%
+                        <li>Large LDL-C change &ndash; start taking 10 mg rosuvastatin once daily, leading to a 45.6%
                             reduction
                             in LDL-C</li>
-                        <li>Achieve LDL-C target &ndash; Maintain an LDL-C of 1.8 mmol/L over your lifetime</li>
-                        <li>Small SBP change &ndash; Lower your sodium intake moderately, leading to a 2 mmHg reduction
-                            in
-                            SBP
+                        <li>Achieve LDL-C target &ndash; maintain an LDL-C of 1.8 mmol/L over your lifetime</li>
+                        <li>Small SBP change &ndash; lower your sodium intake moderately, leading to a 2 mmHg reduction
+                            in SBP
                         </li>
-                        <li>Large SBP change &ndash; start taking antihypertensive therapy, leading to a 14.8 mmHg
-                            reduction
-                            in
-                            SBP</li>
-                        <li>Achieve SBP target &ndash; Maintain a systolic blood pressure of 120 mmHg over your lifetime
+                        <li>Large SBP change &ndash; start taking blood pressure-lowering therapy, leading to a 14.8
+                            mmHg reduction in SBP</li>
+                        <li>Achieve SBP target &ndash; maintain a systolic blood pressure of 120 mmHg over your lifetime
                         </li>
                         {% if data.get('sma') and not data.get('smo') %}
                         <li>Quit smoking</li>
@@ -90,12 +97,13 @@
                 </div>
                 <div>
                     <h2>Test your own interventions</h2>
-                    If you would like to check what your lifetime risk of CVD would be with another intervention, you
-                    can
-                    <a href="/select_intervention">test your own intervention(s)</a>.
+                    Want to see what your lifetime risk of CVD would be with another intervention?
                     <br>
                     <br>
-                    <a href="{{ url_for('restart') }}">Restart</a>
+                    <a href="/select_intervention" class="button-link">Test your own intervention(s)</a>
+                    <br>
+                    <br>
+                    <a href="{{ url_for('restart') }}" class="button-link-red">Restart</a>
                     <br>
                     <br>
                 </div>
@@ -109,7 +117,9 @@
             <img src="{{ url_for('static', filename='images/HF.png') }}" alt="Institution Logo"
                 class="footer-logo-large">
             <img src="{{ url_for('static', filename='images/Baker.svg') }}" alt="Institution Logo" class="footer-logo">
-            <p>Questions or suggestions? <br> Contact: Jedidiah Morton (jedidiah.morton@monash.edu.au)</p>
+            <p>More info and publication outlining the methods behind the score: <a
+                    href="https://github.com/jimb0w/HF">https://github.com/jimb0w/HF</a> <br>
+                Questions or suggestions? <br> Contact: Jedidiah.Morton@monash.edu.au</p>
         </div>
     </footer>
 </body>

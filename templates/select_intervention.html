@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>LTRISK</title>
+    <title>Lifetime risk calculator</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 
@@ -31,7 +31,7 @@
                     <label for="ldl_lp">LDL-cholesterol reduction percentage</label>
                     <input type="number" step="any" id="ldl_lp" name="ldl_lp" placeholder="LDL-C reduction (%)"
                         onblur="validateinputs()">
-                    <p class="subtitle">(For example, rosuvastatin 10 mg lowers LDL-C about 45%)</p>
+                    <p class="subtitle">(For example, rosuvastatin 10 mg lowers LDL-C about 45% on average)</p>
                     <span id="ldl_lp-error" style="color: red; font-size: 0.8rem; display: none;">
                         LDL-C lowering must be between 1 and 99%.</span>
                 </div>
@@ -39,7 +39,8 @@
                     <label for="ldl_la">LDL-cholesterol reduction value</label>
                     <input type="number" step="any" id="ldl_la" name="ldl_la" placeholder="LDL-C reduction (mmol/L)"
                         onblur="validateinputs()">
-                    <p class="subtitle">(For example, switching to psyllium cereal lowers LDL-C by about 0.35 mmol/L)
+                    <p class="subtitle">(For example, switching to psyllium cereal lowers LDL-C by about 0.35 mmol/L on
+                        average)
                     </p>
                     <span id="ldl_la-error" style="color: red; font-size: 0.8rem; display: none;">
                         LDL-C lowering must be above 0 and less than your LDL-C.</span>
@@ -67,7 +68,8 @@
                     <label for="sbp_l">Systolic blood pressure reduction</label>
                     <input type="number" step="any" id="sbp_l" name="sbp_l"
                         placeholder="Systolic blood pressure reduction (mmHg)" onblur="validateinputs()">
-                    <p class="subtitle">(Starting one antihypertensive will reduce blood pressure about 5-10 mmHg)</p>
+                    <p class="subtitle">(Starting one antihypertensive will reduce blood pressure about 5-10 mmHg on
+                        average)</p>
                     <span id="sbp_l-error" style="color: red; font-size: 0.8rem; display: none;">
                         Sytolic blood pressure lowering must be between 1 and 60 mmHg.</span>
                 </div>
@@ -94,7 +96,7 @@
                 <br><br>
                 <button type="submit">Submit</button>
                 <br><br>
-                <div><a href="{{ url_for('restart') }}">Restart</a></div>
+                <a href="{{ url_for('restart') }}" class="button-link-red">Restart</a>
             </form>
         </div>
 

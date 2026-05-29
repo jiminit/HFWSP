@@ -81,7 +81,7 @@ body {
     border-radius: 12px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     width: 100%;
-    width: 500px;
+    width: 800px;
     text-align: center;
 }
 
@@ -197,11 +197,51 @@ button {
     cursor: pointer;
     font-size: 1rem;
     transition: background 0.3s ease;
+    font-weight: bold;
 }
 
 button:hover {
     background-color: #0056b3;
 }
+
+
+
+.button-link {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #007BFF;
+    /* Blue background */
+    color: white;
+    /* White text */
+    text-decoration: none;
+    /* Removes the underline */
+    border-radius: 5px;
+    /* Rounded corners */
+    font-weight: bold;
+}
+
+.button-link:hover {
+    background-color: #0056b3;
+}
+
+.button-link-red {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #a80000;
+    /* Blue background */
+    color: white;
+    /* White text */
+    text-decoration: none;
+    /* Removes the underline */
+    border-radius: 5px;
+    /* Rounded corners */
+    font-weight: bold;
+}
+
+.button-link-red:hover {
+    background-color: #7a000a;
+}
+
 
 ul {
     list-style: none;
@@ -221,9 +261,28 @@ li {
 
 /* Container for each input section */
 .input-group {
-    margin-bottom: 20px;
+    display: flex;
+    /* aligns items horizontally side-by-side */
+    align-items: center;
+    /* centers the label vertically with the input box */
+    gap: 10px;
+    /* adds space between the label and the input box */
+    margin-bottom: 15px;
+    /* adds space between different form rows */
+    text-align: left
+}
+
+.input-group label {
+    width: 200px;
     text-align: left;
-    /* Aligns labels to the left */
+    /* aligns text to the right, closest to the input */
+}
+
+.input-group .label-container {
+    flex: 4;
+    display: flex;
+    flex-direction: column;
+    text-align: left;
 }
 
 /* The Header/Title */
@@ -233,6 +292,8 @@ label {
     color: #333;
     margin-bottom: 2px;
 }
+
+
 
 /* The Subtitle */
 .subtitle {

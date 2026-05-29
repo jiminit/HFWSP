@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>LTRISK</title>
+    <title>Lifetime risk calculator</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 
@@ -13,45 +13,61 @@
     <div class="content-wrapper">
         <div class="container">
             <h2>Calculate lifetime CVD risk</h2>
-            <p class="force-left">Use this tool to calculate your lifetime risk of cardiovascular disease.
+            <p class="force-left">Use this tool to calculate your lifetime risk of cardiovascular disease (CVD).
                 <br><br>
                 Once you have calculated your baseline risk, there are options to see what would happen to
                 your lifetime risk if you undertook different interventions to prevent cardiovascular disease.
+                <br><br>
+                This tool is designed for people without existing cardiovascular disease who are aged between 20 and 70
+                years.
+                People aged 70 years and above are recommended to use the <a
+                    href="https://www.cvdcheck.org.au/calculator">Australian CVD risk calculator</a>.
             </p>
             <h3>Enter variables</h3>
             <form action="/baseline_results" method="post" onsubmit="return finalcheck()">
                 <div class="input-group">
-                    <label for="age">Age (required)</label>
+                    <div class="label-container">
+                        <label for="age">Age*</label>
+                    </div>
+
                     <input type="number" step="1" id="age" name="age" placeholder="Age in years" required
                         onblur="validateinputs()">
-                    <span id="age-error" style="color: red; font-size: 0.8rem; display: none;">Age must be between 10
+                    <span id="age-error" style="color: red; font-size: 0.8rem; display: none;">Age must be between
+                        10
                         and
                         90 years.</span>
                 </div>
                 <div class="input-group">
-                    <label for="sex">Sex at birth (required)</label>
+                    <label for="sex">Sex at birth*</label>
                     <input type="radio" id="sex_f" name="sex" value=0 checked> Female
                     <input type="radio" id="sex_m" name="sex" value=1> Male
                 </div>
                 <div class="input-group">
-                    <label for="ldl">LDL-cholesterol</label>
-                    <p class="subtitle">(leave blank if unsure)</p>
+                    <div class="label-container">
+                        <label for="ldl">LDL-cholesterol</label>
+                        <p class="subtitle">(leave blank if unsure)</p>
+                    </div>
                     <input type="number" step="any" id="ldl" name="ldl" placeholder="LDL-C (mmol/L)"
                         onblur="validateinputs()">
                     <span id="ldl-error" style="color: red; font-size: 0.8rem; display: none;">
                         LDL-C must be between 0.5 and 10 mmol/L.</span>
                 </div>
                 <div class="input-group">
-                    <label for="sbp">Systolic blood pressure</label>
-                    <p class="subtitle">(leave blank if unsure)</p>
+                    <div class="label-container">
+
+                        <label for="sbp">Systolic blood pressure</label>
+                        <p class="subtitle">(leave blank if unsure)</p>
+                    </div>
                     <input type="number" step="any" id="sbp" name="sbp" placeholder="Systolic blood pressure (mmHg)"
                         onblur="validateinputs()">
                     <span id="sbp-error" style="color: red; font-size: 0.8rem; display: none;">
                         Systolic blood pressure must be between 80 and 250 mmHg.</span>
                 </div>
                 <div class="input-group">
-                    <label for="lpa">Lipoprotein (a)</label>
-                    <p class="subtitle">(leave blank if unsure)</p>
+                    <div class="label-container">
+                        <label for="lpa">Lipoprotein (a)</label>
+                        <p class="subtitle">(leave blank if unsure)</p>
+                    </div>
                     <input type="number" step="any" id="lpa" name="lpa" placeholder="Lp(a) (nmol/L)"
                         onblur="validateinputs()">
                     <span id="lpa-error" style="color: red; font-size: 0.8rem; display: none;">
@@ -73,14 +89,15 @@
                     <p class="subtitle">(provide an approximate age if unsure)</p>
                     <input type="number" step="1" id="sma" name="sma" placeholder="Age started smoking in years"
                         onblur="validateinputs()">
-                    <span id="sma-error" style="color: red; font-size: 0.8rem; display: none;">Age started smoking must
+                    <span id="sma-error" style="color: red; font-size: 0.8rem; display: none;">Age started smoking
+                        must
                         be
                         between 5 and 90 years.</span>
                     <span id="sma-error2" style="color: red; font-size: 0.8rem; display: none;">
                         Please input a smoking start age.</span>
                     <span id="age-sma-error" style="color: red; font-size: 0.8rem; display: none;">
                         Age started smoking must be less than or equal to current age.</span>
-                    <label for="cig">What is the average number of cigarrettes you smoke(d) per day?</label>
+                    <label for="cig">Approximately how many cigarettes did/do you smoke per day?</label>
                     <p class="subtitle">(leave blank if unsure)</p>
                     <input type="number" step="any" id="cig" name="cig" placeholder="Average number of cigarettes"
                         onblur="validateinputs()">
@@ -90,9 +107,11 @@
                     <p class="subtitle">(leave blank if you are a current smoker)</p>
                     <input type="number" step="1" id="smo" name="smo" placeholder="Age stopped smoking in years"
                         onblur="validateinputs()">
-                    <span id="smo-error" style="color: red; font-size: 0.8rem; display: none;">Age quit smoking must be
+                    <span id="smo-error" style="color: red; font-size: 0.8rem; display: none;">Age quit smoking must
+                        be
                         between 5 and 90 years.</span>
-                    <span id="sma-smo-error" style="color: red; font-size: 0.8rem; display: none;">Age quit smoking must
+                    <span id="sma-smo-error" style="color: red; font-size: 0.8rem; display: none;">Age quit smoking
+                        must
                         be
                         greater than age started smoking.</span>
                     <span id="age-smo-error" style="color: red; font-size: 0.8rem; display: none;">

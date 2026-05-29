@@ -9,13 +9,13 @@ import plotly.express as px
 import plotly.io as pio
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 
-from rfs_and_tps import construct_life_table
+from rfs_and_tps import construct_life_table, ave_life_table
 from life_table import lifetable
 from plots import plot_ltrisk, plot_ltrisk_i, plot_ltrisk_u
 from errorcheck import errorcheck
 
 app = Flask(__name__)
-app.secret_key = "157845453dbcgahytve" 
+app.secret_key = "198451551257845453dbcgahytve" 
 
 @app.route('/')
 def index():
@@ -102,12 +102,24 @@ def baseline_results():
                             sbp_target_input=sbp_t,
                             quit_smoking_input=qs)
 
-
+    ave = ave_life_table(sex_input=sex, 
+                            age_input=age)
+    
     df, cvd, LE = lifetable(df, age_input=age)
+    ave, avec, avel = lifetable(ave, age_input=age)
     LE = str(round(LE,1)) + " years"
     CV = str(round(cvd,1)) + "%"
     result_list = [LE,CV]
-    fig = plot_ltrisk(df, age_input=age)
+
+    df['scenario'] = 'Your lifetime risk'
+    ave['scenario'] = 'Average for your age and sex'
+
+    all_df = []
+    all_df.append(df)
+    all_df.append(ave)
+    final_df = pd.concat(all_df)
+    print(final_df)
+    fig = plot_ltrisk(final_df, age_input=age)
     graph_json = pio.to_json(fig)
     return render_template('baseline_results.html', result=result_list, graphJSON=graph_json)
 

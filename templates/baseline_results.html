@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>Results</title>
+    <title>Lifetime risk calculator</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
 </head>
@@ -13,7 +13,7 @@
     </header>
     <div class="content-wrapper">
         <div class="container2">
-            <h2>Results</h2>
+            <h2>Your current risk</h2>
             <table class="stata-table">
                 <thead>
                 </thead>
@@ -28,25 +28,28 @@
                     </tr>
                 </tbody>
             </table>
+            Cardiovascular disease in this tool is defined as a myocardial infarction, death from coronary heart
+            disease, a stroke, or death from cerebrovascular disease.
             <h2>Lifetime risk of CVD visualised</h2>
-            This graph shows your estimated cumulative risk of CVD by age.
+            This graph shows your estimated cumulative risk of cardiovascular disease (CVD) by age,
+            as well as the average lifetime risk for someone of your age and sex at birth.
             <div id="chart" class="chart"></div>
             <script type="text/javascript">
                 var graphs = JSON.parse('{{ graphJSON | safe }}');
                 Plotly.newPlot('chart', graphs.data, graphs.layout, { responsive: true });
             </script>
-            These are estimates assuming no preventive action is taken.
+            <h2>Test interventions to prevent cardiovascular disease</h2>
+            Want to see what would happen if you took further action to prevent cardiovascular disease?
             <br>
             <br>
-            To see what would happen if you took action to prevent CVD,
-            you can <a href="/interventions" onclick="document.getElementById('loading-overlay').style.display='flex';">
-                see what would happen with a range of interventions</a>.
+            <a href="/interventions" onclick="document.getElementById('loading-overlay').style.display='flex';"
+                class="button-link">Test a range of interventions</a>
             <br>
             <br>
-            Or, you can <a href="/select_intervention">test your own interventions</a>
+            <a href="/select_intervention" class="button-link">Test your own intervention(s)</a>
             <br>
             <br>
-            If you think you input a value in error, you can <a href="{{ url_for('restart') }}">restart</a>.
+            <a href="{{ url_for('restart') }}" class="button-link-red">Restart</a>
             <br>
             <br>
 

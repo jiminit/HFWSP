@@ -52,7 +52,7 @@ def construct_life_table(sex_input,
         df.loc[df['age'] >= age_input, 'ldl'] = df['ldl']-ldl_lowering_input_a
 
     if ldl_target_input is not None:
-        df.loc[df['age'] >= age_input, 'ldl'] = ldl_target_input
+        df.loc[(df['age'] >= age_input) & (df['ldl'] > ldl_target_input), 'ldl'] = ldl_target_input
 
     #SBP trajectory
     if sbp_input is None or np.isnan(sbp_input):
@@ -65,10 +65,9 @@ def construct_life_table(sex_input,
     #SBP intervention
     if sbp_lowering_input is not None:
         df.loc[df['age'] >= age_input, 'sbp'] = df['sbp']-sbp_lowering_input
-        df.loc[(df['age'] >= age_input) & (df['sbp'] < 120), 'sbp'] = 120
 
     if sbp_target_input is not None:
-        df.loc[df['age'] >= age_input, 'sbp'] = sbp_target_input
+        df.loc[(df['age'] >= age_input) & (df['sbp'] > sbp_target_input), 'sbp'] = sbp_target_input
     
     #Lp(a) trajectory
     if lpa_input is None or np.isnan(lpa_input):
@@ -229,3 +228,83 @@ def construct_life_table(sex_input,
     df.loc[df['age'] == age_input, 'DT_S'] = 0.0
 
     return df
+
+
+
+
+def ave_life_table(sex_input, 
+                         age_input):
+
+    #Build initial structure and merge in rfs and tps
+    df = pd.DataFrame({
+        'sex': sex_input,
+        'age': np.arange(1000) / 10
+    })
+    rfs = pd.read_csv('rfs.csv')
+    tps = pd.read_csv('tps.csv')
+    rfs['age'] = rfs['age'].round(1)
+    tps['age'] = tps['age'].round(1)
+    df = pd.merge(df, rfs, on=['sex', 'age'], how='inner')
+    df = pd.merge(df, tps, on=['sex', 'age'], how='inner')
+
+    #LDL-C trajectory
+    df['ldl'] = df['rf_ldl']
+    df['sbp'] = df['rf_sbp']
+    df['lsi'] = df['rf_lsi']
+    
+    df['tp_nfMI_dm'] = 1.32 * df['tp_nfMI'] / (1 + (0.32 * df['rf_dmp']))
+    df['tp_nfMI'] /= (1 + (0.32 * df['rf_dmp']))
+
+    df['tp_fCHD_dm'] = 1.32 * df['tp_fCHD'] / (1 + (0.32 * df['rf_dmp']))
+    df['tp_fCHD'] /= (1 + (0.32 * df['rf_dmp']))
+
+    df['tp_nfIS_dm'] = 1.73 * df['tp_nfIS'] / (1 + (0.73 * df['rf_dmp']))
+    df['tp_nfIS'] /= (1 + (0.73 * df['rf_dmp']))
+
+    df['tp_fCBD_dm'] = 1.73 * df['tp_fCBD'] / (1 + (0.73 * df['rf_dmp']))
+    df['tp_fCBD'] /= (1 + (0.73 * df['rf_dmp']))
+
+    vars = ['tp_nfHS', 'tp_fLC', 'tp_fCC', 'tp_fCOPD', 'tp_fOTH', ]
+    for i in vars:
+        df[f"{i}_dm"] = df[i]
+
+    df['tp_d_cvd'] = 3*(df['tp_fCHD']+df['tp_fCBD']+df['tp_fLC']+df['tp_fCC']+df['tp_fCOPD']+df['tp_fOTH'])
+
+    #Adjust transition probabilities
+    vars = ['tp_nfMI', 'tp_nfIS', 'tp_nfHS', 'tp_nfdm', 'tp_fCHD', 'tp_fCBD', 'tp_fLC', 'tp_fCC', 'tp_fCOPD', 'tp_fOTH']
+    vars_dm = ['tp_nfMI_dm', 'tp_fCHD_dm', 'tp_nfIS_dm', 'tp_fCBD_dm', 'tp_nfHS_dm', 'tp_fLC_dm', 'tp_fCC_dm', 'tp_fCOPD_dm', 'tp_fOTH_dm']
+
+    df['ratesum_he'] = df['tp_nfMI']+df['tp_nfIS']+df['tp_nfHS']+df['tp_nfdm']+df['tp_fCHD']+df['tp_fCBD']+df['tp_fLC']+df['tp_fCC']+df['tp_fCOPD']+df['tp_fOTH']
+    df['ratesum_dm'] = df['tp_nfMI_dm']+df['tp_fCHD_dm']+df['tp_nfIS_dm']+df['tp_fCBD_dm']+df['tp_nfHS_dm']+df['tp_fLC_dm']+df['tp_fCC_dm']+df['tp_fCOPD_dm']+df['tp_fOTH_dm']
+
+    df['tpsum_he'] = 1-np.exp(-df['ratesum_he']*0.1)
+    df['tpsum_dm'] = 1-np.exp(-df['ratesum_dm']*0.1)
+
+    for i in vars:
+        df[i] =  df['tpsum_he']*df[i]/df['ratesum_he']
+    
+    for i in vars_dm:
+        df[i] =  df['tpsum_dm']*df[i]/df['ratesum_dm']
+
+    df['tp_d_cvd'] = 1-np.exp(-df['tp_d_cvd']*0.1)
+
+    #Set-up baseline health states
+    df['HE_S'] = np.nan
+    df['DM_S'] = np.nan
+    df['CV_S'] = np.nan
+    df['DT_S'] = np.nan
+    df['HE_E'] = np.nan
+    df['DM_E'] = np.nan
+    df['CV_E'] = np.nan
+    df['DT_E'] = np.nan
+
+
+    df.loc[df['age'] == age_input, 'HE_S'] = 1 - df['rf_dmp']
+    df.loc[df['age'] == age_input, 'DM_S'] = df['rf_dmp']
+
+
+    df.loc[df['age'] == age_input, 'CV_S'] = 0.0
+    df.loc[df['age'] == age_input, 'DT_S'] = 0.0
+
+    return df
+

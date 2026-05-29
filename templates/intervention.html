@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>Results</title>
+    <title>Lifetime risk calculator</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
 </head>
@@ -15,7 +15,7 @@
         <div class="container2">
 
             <div class="report-wrapper">
-                <h2>Results</h2>
+                <h2>Your lifetime risk with your selected intervention</h2>
                 <div class="report-item">
                     <table class="stata-table">
                         <thead>
@@ -37,6 +37,8 @@
                             {% endfor %}
                         </tbody>
                     </table>
+                    Cardiovascular disease in this tool is defined as a myocardial infarction, death from coronary heart
+                    disease, a stroke, or death from cerebrovascular disease.
                     {% if data.get('sma') and not data.get('smo') %}
                     <div class="disclaimer-box">
                         <strong>Note:</strong> Lifetime risk of CVD can increase for smokers when quitting. This is
@@ -61,18 +63,19 @@
                     </div>
                 </div>
                 <div>
-                    <h2>Test another intervention.</h2>
-                    If you would like to check what your lifetime risk of CVD would be with another intervention,
-                    <a href="/select_intervention">click here</a>.
+                    <h2>Test another intervention</h2>
+                    <a href="/select_intervention" class="button-link">Test another intervention</a>
                     <br>
                     <br>
-                    If you want to see the previous range of interventions,
-                    <a href="/interventions">click here</a>.
+                    <a href="/interventions" onclick="document.getElementById('loading-overlay').style.display='flex';"
+                        class="button-link">View a range of interventions</a>
                     <br>
                     <br>
-                    <a href="{{ url_for('restart') }}">Restart</a>
+                    <a href="{{ url_for('restart') }}" class="button-link-red">Restart</a>
                     <br>
                     <br>
+
+
                 </div>
             </div>
         </div>
