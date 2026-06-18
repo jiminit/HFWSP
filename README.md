@@ -23,6 +23,8 @@ HFWSP/
 ├── static/                 # html and css files
 ├── requirements.txt        # Package dependencies
 └── README.md               # Repository documentation
+```
+
 
 ## Questions or suggestions?
 Contact: Jedidiah Morton (jedidiah.morton@monash.edu.au)
